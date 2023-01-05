@@ -1,38 +1,56 @@
-Role Name
+Lighthouse-role
 =========
 
-A brief description of the role goes here.
+Роль устанавливает Nginx и Lighthouse.
 
-Requirements
+Предварительные требования
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Предполагается что роль будет выполняться на deb-based дистрибутивах Linux (Debian, Ubuntu).  
+Предполагается что на машине уже будет установлена утилита unzip.
 
-Role Variables
+Переменные роли
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+В [переменных по умолчанию](./defaults/main.yml) указана версия Nginx 1.18.0, в случае необходимости её нужно изменить.  
+В [изменяемых переменных](./defaults/main.yml) указан порт по которому будет слушать Lighthouse. По умолчанию это порт 80, в случае необходимости его можно изменить.
 
-Dependencies
+Зависимости
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Нет зависимостей
 
-Example Playbook
+Пример плейбука с использованием роли
 ----------------
+Пример для использования на машинах на которых уже установлена утилита Unzip:
+```
+- name: Install Lighthouse
+  hosts: lighthouse
+  roles:
+    - lighthouse-role
+```
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+Пример с установкой утилиты Unzip в рамках pre_tasks в плее использующем данную роль:
+```
+- name: Install Lighthouse
+  hosts: lighthouse
+  pre_tasks:
+    - name: install unzip
+      become: true
+      ansible.builtin.apt:
+        name: unzip
+        state: present
+        update_cache: yes
+  roles:
+    - lighthouse-role
+```
 
 License
 -------
 
-BSD
+Free
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Реализовал Дмитриев Николай
